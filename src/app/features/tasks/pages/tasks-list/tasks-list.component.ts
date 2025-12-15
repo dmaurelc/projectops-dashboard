@@ -1,9 +1,7 @@
 import { Component, signal, inject, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { Task, TaskCreateDto } from '@core/models/task.model';
 import { TaskService } from '@core/services/task.service';
-import { CardComponent } from '@shared/components/ui/card/card.component';
 import { ButtonComponent } from '@shared/components/ui/button/button.component';
 import { TaskItemComponent } from '../../components/task-item/task-item.component';
 import { TaskFiltersComponent } from '../../components/task-filters/task-filters.component';
@@ -15,8 +13,6 @@ import { TaskFormComponent } from '../../components/task-form/task-form.componen
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
-    CardComponent,
     ButtonComponent,
     TaskItemComponent,
     TaskFiltersComponent,

@@ -1,7 +1,6 @@
 import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MetricsData, KPI } from '@core/models/metrics.model';
-import { CardComponent } from '@shared/components/ui/card/card.component';
 import { ButtonComponent } from '@shared/components/ui/button/button.component';
 import { KpiCardComponent } from '../../components/kpi-card/kpi-card.component';
 import { ChartCardComponent } from '../../components/chart-card/chart-card.component';
@@ -12,7 +11,6 @@ import { MetricsSummaryComponent } from '../../components/metrics-summary/metric
   standalone: true,
   imports: [
     CommonModule,
-    CardComponent,
     ButtonComponent,
     KpiCardComponent,
     ChartCardComponent,
