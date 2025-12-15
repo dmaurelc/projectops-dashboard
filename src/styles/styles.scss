@@ -1,38 +1,7 @@
-// Tailwind CSS v4
-@import 'tailwindcss';
-
-// Tailwind Theme Customization
-@theme {
-  /* Colors */
-  --color-primary-50: #eef2ff;
-  --color-primary-100: #e0e7ff;
-  --color-primary-200: #c7d2fe;
-  --color-primary-300: #a5b4fc;
-  --color-primary-400: #818cf8;
-  --color-primary-500: #6366f1;
-  --color-primary-600: #4f46e5;
-  --color-primary-700: #4338ca;
-  --color-primary-800: #3730a3;
-  --color-primary-900: #312e81;
-  --color-primary-950: #1e1b4b;
-
-  --color-accent-50: #fdf2f8;
-  --color-accent-100: #fce7f3;
-  --color-accent-200: #fbcfe8;
-  --color-accent-300: #f9a8d4;
-  --color-accent-400: #f472b6;
-  --color-accent-500: #ec4899;
-  --color-accent-600: #db2777;
-  --color-accent-700: #be185d;
-  --color-accent-800: #9f1239;
-  --color-accent-900: #831843;
-  --color-accent-950: #500724;
-
-  /* Font families */
-  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', 'Roboto', sans-serif;
-  --font-display: 'Poppins', 'Inter', sans-serif;
-  --font-mono: 'Fira Code', 'Monaco', 'Consolas', monospace;
-}
+// Tailwind CSS v3
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 // Custom base styles
 @layer base {
