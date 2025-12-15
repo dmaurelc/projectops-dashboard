@@ -7,16 +7,21 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     <div [class]="cardClasses()">
-      <div class="flex justify-between items-center px-5 py-4 border-b border-gray-100 bg-gray-50/50" *ngIf="title">
-        <h3 class="text-base font-semibold text-gray-900 tracking-tight">{{ title }}</h3>
+      <!-- Card Header -->
+      <div class="flex flex-row items-center justify-between space-y-0 pb-2" [class.p-6]="title || hasActions" *ngIf="title || hasActions">
+        <h3 class="text-sm font-medium leading-none tracking-tight" *ngIf="title">{{ title }}</h3>
         <div class="flex items-center gap-2" *ngIf="hasActions">
           <ng-content select="[actions]"></ng-content>
         </div>
       </div>
+
+      <!-- Card Content -->
       <div [class]="contentClasses()">
         <ng-content></ng-content>
       </div>
-      <div class="px-5 py-3.5 border-t border-gray-100 bg-gray-50/30" *ngIf="hasFooter">
+
+      <!-- Card Footer -->
+      <div class="flex items-center p-6 pt-0" *ngIf="hasFooter">
         <ng-content select="[footer]"></ng-content>
       </div>
     </div>
@@ -25,34 +30,28 @@ import { CommonModule } from '@angular/common';
 })
 export class CardComponent {
   @Input() title?: string;
-  @Input() variant: 'default' | 'elevated' | 'bordered' | 'glass' = 'default';
   @Input() clickable = false;
-  @Input() padding: 'none' | 'sm' | 'md' | 'lg' = 'md';
+  @Input() padding: 'none' | 'sm' | 'default' | 'lg' = 'default';
   @Input() hasActions = false;
   @Input() hasFooter = false;
 
+  // shadcn/ui inspired card styles
   protected cardClasses = computed(() => {
-    const baseClasses = 'bg-white rounded-xl overflow-hidden transition-all duration-300';
-
-    const variantClasses = {
-      default: 'shadow-md hover:shadow-lg',
-      elevated: 'shadow-xl hover:shadow-2xl',
-      bordered: 'border-2 border-gray-200 hover:border-gray-300',
-      glass: 'bg-white/70 backdrop-blur-lg shadow-glass border border-white/20',
-    };
+    const baseClasses =
+      'rounded-lg border bg-card text-card-foreground';
 
     const clickableClasses = this.clickable
-      ? 'cursor-pointer hover:-translate-y-0.5 active:scale-[0.98]'
+      ? 'cursor-pointer transition-colors hover:bg-accent/50'
       : '';
 
-    return `${baseClasses} ${variantClasses[this.variant]} ${clickableClasses}`;
+    return `${baseClasses} ${clickableClasses}`;
   });
 
   protected contentClasses = computed(() => {
     const paddingClasses = {
       none: '',
       sm: 'p-4',
-      md: 'p-5',
+      default: 'p-6',
       lg: 'p-8',
     };
 

@@ -33,7 +33,7 @@ import { MemberCardComponent } from '../../components/member-card/member-card.co
               Manage your team members and their availability
             </p>
           </div>
-          <app-button variant="primary" size="lg" (clicked)="openCreateOffcanvas()" class="self-start sm:self-auto">
+          <app-button variant="default" size="lg" (clicked)="openCreateOffcanvas()" class="self-start sm:self-auto">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
             </svg>
@@ -120,7 +120,7 @@ import { MemberCardComponent } from '../../components/member-card/member-card.co
             <p class="text-sm text-gray-500 mb-8 text-center max-w-md">
               Start building your team by adding your first member. Track their availability and skills.
             </p>
-            <app-button variant="primary" size="lg" (clicked)="openCreateOffcanvas()">
+            <app-button variant="default" size="lg" (clicked)="openCreateOffcanvas()">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
               </svg>

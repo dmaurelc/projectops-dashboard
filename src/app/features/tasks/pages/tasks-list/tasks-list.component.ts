@@ -35,7 +35,7 @@ import { TaskFormComponent } from '../../components/task-form/task-form.componen
               Manage and track all your tasks efficiently
             </p>
           </div>
-          <app-button variant="primary" size="lg" (clicked)="openCreateOffcanvas()" class="self-start sm:self-auto">
+          <app-button variant="default" size="lg" (clicked)="openCreateOffcanvas()" class="self-start sm:self-auto">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
@@ -134,7 +134,7 @@ import { TaskFormComponent } from '../../components/task-form/task-form.componen
                 <p class="text-sm text-gray-500 mb-6 text-center max-w-md">
                   Get started by creating your first task. Track your work and stay organized.
                 </p>
-                <app-button variant="primary" (clicked)="openCreateOffcanvas()">
+                <app-button variant="default" (clicked)="openCreateOffcanvas()">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                   </svg>

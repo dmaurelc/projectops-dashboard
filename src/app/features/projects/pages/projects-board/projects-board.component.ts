@@ -35,7 +35,7 @@ import { ProjectFormComponent } from '../../components/project-form/project-form
               Manage and track all your projects in one place
             </p>
           </div>
-          <app-button variant="primary" size="lg" (clicked)="openCreateModal()" class="self-start sm:self-auto">
+          <app-button variant="default" size="lg" (clicked)="openCreateModal()" class="self-start sm:self-auto">
             <span class="text-lg mr-2">+</span>
             <span>New Project</span>
           </app-button>
