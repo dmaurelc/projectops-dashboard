@@ -1,0 +1,13 @@
+{
+  "project": "P3 ProjectOps Dashboard",
+  "entities": ["Project", "Task", "TeamMember", "Status"],
+  "views": ["ProjectsBoard", "TasksList", "TeamOverview", "MetricsDashboard"],
+  "api_endpoints": [
+    "/projects",
+    "/projects/{id}",
+    "/tasks",
+    "/tasks/{id}",
+    "/team",
+    "/metrics"
+  ]
+}

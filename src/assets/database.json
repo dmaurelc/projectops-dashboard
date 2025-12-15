@@ -1,0 +1,203 @@
+{
+  "projects": [
+    {
+      "id": "1",
+      "name": "E-Commerce Platform Redesign",
+      "description": "Complete redesign of the e-commerce platform with modern UI/UX",
+      "status": "in_progress",
+      "startDate": "2024-10-01T00:00:00.000Z",
+      "endDate": "2025-03-31T00:00:00.000Z",
+      "budget": 150000,
+      "progress": 65,
+      "teamMemberIds": ["1", "2", "3", "4"],
+      "createdAt": "2024-10-01T00:00:00.000Z",
+      "updatedAt": "2024-12-11T00:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "name": "Mobile App Development",
+      "description": "Native iOS and Android application for customer engagement",
+      "status": "in_progress",
+      "startDate": "2024-11-15T00:00:00.000Z",
+      "endDate": "2025-06-30T00:00:00.000Z",
+      "budget": 200000,
+      "progress": 40,
+      "teamMemberIds": ["2", "5", "6"],
+      "createdAt": "2024-11-15T00:00:00.000Z",
+      "updatedAt": "2024-12-11T00:00:00.000Z"
+    },
+    {
+      "id": "3",
+      "name": "API Infrastructure Upgrade",
+      "description": "Upgrade backend infrastructure and API endpoints",
+      "status": "planning",
+      "startDate": "2025-01-01T00:00:00.000Z",
+      "endDate": "2025-04-30T00:00:00.000Z",
+      "budget": 80000,
+      "progress": 10,
+      "teamMemberIds": ["3", "7"],
+      "createdAt": "2024-12-01T00:00:00.000Z",
+      "updatedAt": "2024-12-11T00:00:00.000Z"
+    },
+    {
+      "id": "4",
+      "name": "Data Analytics Platform",
+      "description": "Build comprehensive analytics dashboard and reporting tools",
+      "status": "completed",
+      "startDate": "2024-08-01T00:00:00.000Z",
+      "endDate": "2024-11-30T00:00:00.000Z",
+      "budget": 120000,
+      "progress": 100,
+      "teamMemberIds": ["1", "4", "8"],
+      "createdAt": "2024-08-01T00:00:00.000Z",
+      "updatedAt": "2024-11-30T00:00:00.000Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "1",
+      "projectId": "1",
+      "title": "Design homepage mockups",
+      "description": "Create high-fidelity mockups for the new homepage",
+      "status": "done",
+      "assignedToId": "1",
+      "dueDate": "2024-11-15T00:00:00.000Z",
+      "priority": "high",
+      "estimatedHours": 16,
+      "actualHours": 18,
+      "tags": ["design", "ui"],
+      "createdAt": "2024-10-05T00:00:00.000Z",
+      "updatedAt": "2024-11-15T00:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "projectId": "1",
+      "title": "Implement checkout flow",
+      "description": "Develop and test the new checkout process",
+      "status": "in_progress",
+      "assignedToId": "2",
+      "dueDate": "2024-12-20T00:00:00.000Z",
+      "priority": "critical",
+      "estimatedHours": 32,
+      "actualHours": 24,
+      "tags": ["development", "backend"],
+      "createdAt": "2024-10-10T00:00:00.000Z",
+      "updatedAt": "2024-12-11T00:00:00.000Z"
+    },
+    {
+      "id": "3",
+      "projectId": "2",
+      "title": "Setup CI/CD pipeline",
+      "description": "Configure GitHub Actions for automated deployments",
+      "status": "todo",
+      "assignedToId": "5",
+      "dueDate": "2025-01-10T00:00:00.000Z",
+      "priority": "high",
+      "estimatedHours": 8,
+      "tags": ["devops", "infrastructure"],
+      "createdAt": "2024-11-20T00:00:00.000Z",
+      "updatedAt": "2024-12-11T00:00:00.000Z"
+    }
+  ],
+  "teamMembers": [
+    {
+      "id": "1",
+      "name": "Alice Johnson",
+      "email": "alice@example.com",
+      "role": "project_manager",
+      "avatar": "https://ui-avatars.com/api/?name=Alice+Johnson",
+      "projectIds": ["1", "4"],
+      "skills": ["Project Management", "Leadership"],
+      "availability": 100,
+      "isActive": true,
+      "joinedDate": "2024-01-15T00:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "name": "Bob Smith",
+      "email": "bob@example.com",
+      "role": "developer",
+      "avatar": "https://ui-avatars.com/api/?name=Bob+Smith",
+      "projectIds": ["1", "2"],
+      "skills": ["JavaScript", "TypeScript", "Backend"],
+      "availability": 85,
+      "isActive": true,
+      "joinedDate": "2024-02-01T00:00:00.000Z"
+    },
+    {
+      "id": "3",
+      "name": "Carol Williams",
+      "email": "carol@example.com",
+      "role": "developer",
+      "avatar": "https://ui-avatars.com/api/?name=Carol+Williams",
+      "projectIds": ["1", "3"],
+      "skills": ["Python", "SQL", "Backend"],
+      "availability": 90,
+      "isActive": true,
+      "joinedDate": "2024-03-10T00:00:00.000Z"
+    },
+    {
+      "id": "4",
+      "name": "David Brown",
+      "email": "david@example.com",
+      "role": "qa",
+      "avatar": "https://ui-avatars.com/api/?name=David+Brown",
+      "projectIds": ["1", "4"],
+      "skills": ["Testing", "QA", "Automation"],
+      "availability": 80,
+      "isActive": true,
+      "joinedDate": "2024-04-05T00:00:00.000Z"
+    },
+    {
+      "id": "5",
+      "name": "Emma Davis",
+      "email": "emma@example.com",
+      "role": "developer",
+      "avatar": "https://ui-avatars.com/api/?name=Emma+Davis",
+      "projectIds": ["2"],
+      "skills": ["React", "Frontend", "CSS"],
+      "availability": 75,
+      "isActive": true,
+      "joinedDate": "2024-05-12T00:00:00.000Z"
+    },
+    {
+      "id": "6",
+      "name": "Frank Miller",
+      "email": "frank@example.com",
+      "role": "developer",
+      "avatar": "https://ui-avatars.com/api/?name=Frank+Miller",
+      "projectIds": ["2"],
+      "skills": ["React Native", "Mobile", "iOS"],
+      "availability": 70,
+      "isActive": true,
+      "joinedDate": "2024-06-01T00:00:00.000Z"
+    },
+    {
+      "id": "7",
+      "name": "Grace Lee",
+      "email": "grace@example.com",
+      "role": "developer",
+      "avatar": "https://ui-avatars.com/api/?name=Grace+Lee",
+      "projectIds": ["3"],
+      "skills": ["DevOps", "Infrastructure", "AWS"],
+      "availability": 95,
+      "isActive": true,
+      "joinedDate": "2024-07-15T00:00:00.000Z"
+    },
+    {
+      "id": "8",
+      "name": "Henry Wilson",
+      "email": "henry@example.com",
+      "role": "developer",
+      "avatar": "https://ui-avatars.com/api/?name=Henry+Wilson",
+      "projectIds": ["4"],
+      "skills": ["Data Analysis", "SQL", "Analytics"],
+      "availability": 88,
+      "isActive": true,
+      "joinedDate": "2024-08-20T00:00:00.000Z"
+    }
+  ],
+  "agents": [],
+  "agentTasks": [],
+  "agentLogs": []
+}

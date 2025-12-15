@@ -1,0 +1,161 @@
+@import "variables";
+@import "mixins";
+
+// Reset and base styles
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  font-weight: $font-weight-normal;
+  line-height: 1.6;
+  color: $gray-700;
+  background-color: $light-color;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Typography
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: $font-weight-semibold;
+  line-height: 1.2;
+  color: $gray-900;
+}
+
+h1 {
+  font-size: 2.25rem;
+}
+
+h2 {
+  font-size: 1.875rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+}
+
+h5 {
+  font-size: 1.125rem;
+}
+
+h6 {
+  font-size: 1rem;
+}
+
+p {
+  margin: 0 0 1rem 0;
+  color: $gray-600;
+}
+
+a {
+  color: $primary-color;
+  text-decoration: none;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $primary-dark;
+  }
+}
+
+// Utility classes
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 $spacing-md;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.mt-1 {
+  margin-top: $spacing-sm;
+}
+
+.mt-2 {
+  margin-top: $spacing-md;
+}
+
+.mt-3 {
+  margin-top: $spacing-lg;
+}
+
+.mb-1 {
+  margin-bottom: $spacing-sm;
+}
+
+.mb-2 {
+  margin-bottom: $spacing-md;
+}
+
+.mb-3 {
+  margin-bottom: $spacing-lg;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-1 {
+  gap: $spacing-sm;
+}
+
+.gap-2 {
+  gap: $spacing-md;
+}
+
+.gap-3 {
+  gap: $spacing-lg;
+}
+
+// Scrollbar styles
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $gray-300;
+  border-radius: 4px;
+
+  &:hover {
+    background: $gray-400;
+  }
+}
