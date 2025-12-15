@@ -1,161 +1,262 @@
-@import "variables";
-@import "mixins";
+// Tailwind CSS v4
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
 
-// Reset and base styles
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+// Tailwind Theme Customization
+@theme {
+  /* Colors */
+  --color-primary-50: #eef2ff;
+  --color-primary-100: #e0e7ff;
+  --color-primary-200: #c7d2fe;
+  --color-primary-300: #a5b4fc;
+  --color-primary-400: #818cf8;
+  --color-primary-500: #6366f1;
+  --color-primary-600: #4f46e5;
+  --color-primary-700: #4338ca;
+  --color-primary-800: #3730a3;
+  --color-primary-900: #312e81;
+  --color-primary-950: #1e1b4b;
+
+  --color-accent-50: #fdf2f8;
+  --color-accent-100: #fce7f3;
+  --color-accent-200: #fbcfe8;
+  --color-accent-300: #f9a8d4;
+  --color-accent-400: #f472b6;
+  --color-accent-500: #ec4899;
+  --color-accent-600: #db2777;
+  --color-accent-700: #be185d;
+  --color-accent-800: #9f1239;
+  --color-accent-900: #831843;
+  --color-accent-950: #500724;
+
+  /* Font families */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', 'Roboto', sans-serif;
+  --font-display: 'Poppins', 'Inter', sans-serif;
+  --font-mono: 'Fira Code', 'Monaco', 'Consolas', monospace;
+
+  /* Spacing */
+  --spacing-18: 4.5rem;
+  --spacing-88: 22rem;
+  --spacing-128: 32rem;
+
+  /* Animation */
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-bounce-slow: bounce 2s infinite;
+  --animate-spin-slow: spin 3s linear infinite;
+
+  /* Custom animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateY(-10px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  --animate-fadeIn: fadeIn 0.5s ease-in;
+  --animate-slideIn: slideIn 0.3s ease-out;
 }
 
-html,
-body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
+// Custom base styles
+@layer base {
+  html,
+  body {
+    @apply h-full m-0 p-0;
+  }
 
-body {
-  font-family: $font-family-base;
-  font-size: $font-size-base;
-  font-weight: $font-weight-normal;
-  line-height: 1.6;
-  color: $gray-700;
-  background-color: $light-color;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  body {
+    @apply font-sans text-base text-gray-700 bg-gray-50 antialiased;
+  }
 
-// Typography
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 0;
-  font-weight: $font-weight-semibold;
-  line-height: 1.2;
-  color: $gray-900;
-}
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply m-0 font-semibold text-gray-900;
+  }
 
-h1 {
-  font-size: 2.25rem;
-}
+  h1 {
+    @apply text-4xl;
+  }
 
-h2 {
-  font-size: 1.875rem;
-}
+  h2 {
+    @apply text-3xl;
+  }
 
-h3 {
-  font-size: 1.5rem;
-}
+  h3 {
+    @apply text-2xl;
+  }
 
-h4 {
-  font-size: 1.25rem;
-}
+  h4 {
+    @apply text-xl;
+  }
 
-h5 {
-  font-size: 1.125rem;
-}
+  h5 {
+    @apply text-lg;
+  }
 
-h6 {
-  font-size: 1rem;
-}
+  h6 {
+    @apply text-base;
+  }
 
-p {
-  margin: 0 0 1rem 0;
-  color: $gray-600;
-}
+  p {
+    @apply mb-4 text-gray-600;
+  }
 
-a {
-  color: $primary-color;
-  text-decoration: none;
-  transition: color $transition-fast;
+  a {
+    @apply text-primary-600 no-underline transition-colors duration-200 hover:text-primary-700;
+  }
 
-  &:hover {
-    color: $primary-dark;
+  // Custom scrollbar
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded hover:bg-gray-400;
   }
 }
 
-// Utility classes
-.container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 $spacing-md;
+// Custom component classes
+@layer components {
+  // Button variants
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2.5 text-base font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 shadow-sm hover:shadow-md;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500 shadow-sm hover:shadow-md;
+  }
+
+  .btn-outline {
+    @apply border-2 border-primary-600 text-primary-600 hover:bg-primary-50 focus:ring-primary-500;
+  }
+
+  .btn-ghost {
+    @apply text-gray-700 hover:bg-gray-100 focus:ring-gray-500;
+  }
+
+  .btn-danger {
+    @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 shadow-sm hover:shadow-md;
+  }
+
+  .btn-sm {
+    @apply px-3 py-2 text-sm;
+  }
+
+  .btn-lg {
+    @apply px-6 py-3 text-lg;
+  }
+
+  // Card variants
+  .card {
+    @apply bg-white rounded-xl transition-all duration-300;
+  }
+
+  .card-default {
+    @apply shadow-md hover:shadow-lg;
+  }
+
+  .card-elevated {
+    @apply shadow-xl hover:shadow-2xl;
+  }
+
+  .card-bordered {
+    @apply border-2 border-gray-200 hover:border-gray-300;
+  }
+
+  .card-glass {
+    @apply bg-white/70 backdrop-blur-lg shadow-xl;
+  }
+
+  // Status badges
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-success {
+    @apply bg-green-100 text-green-800;
+  }
+
+  .badge-warning {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+
+  .badge-danger {
+    @apply bg-red-100 text-red-800;
+  }
+
+  .badge-info {
+    @apply bg-blue-100 text-blue-800;
+  }
+
+  .badge-gray {
+    @apply bg-gray-100 text-gray-800;
+  }
+
+  // Container
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  // Form inputs (enhanced by @tailwindcss/forms)
+  .input {
+    @apply block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 transition-colors duration-200;
+  }
+
+  .input-error {
+    @apply border-red-500 focus:border-red-500 focus:ring-red-500;
+  }
+
+  // Loading spinner
+  .spinner {
+    @apply w-8 h-8 border-4 border-gray-200 border-t-primary-600 rounded-full animate-spin;
+  }
+
+  .spinner-sm {
+    @apply w-4 h-4 border-2;
+  }
+
+  .spinner-lg {
+    @apply w-12 h-12 border-4;
+  }
 }
 
-.text-center {
-  text-align: center;
-}
+// Custom utilities
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent;
+  }
 
-.text-right {
-  text-align: right;
-}
+  .glass-effect {
+    @apply bg-white/70 backdrop-blur-lg;
+  }
 
-.mt-1 {
-  margin-top: $spacing-sm;
-}
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 
-.mt-2 {
-  margin-top: $spacing-md;
-}
-
-.mt-3 {
-  margin-top: $spacing-lg;
-}
-
-.mb-1 {
-  margin-bottom: $spacing-sm;
-}
-
-.mb-2 {
-  margin-bottom: $spacing-md;
-}
-
-.mb-3 {
-  margin-bottom: $spacing-lg;
-}
-
-.d-flex {
-  display: flex;
-}
-
-.align-center {
-  align-items: center;
-}
-
-.justify-between {
-  justify-content: space-between;
-}
-
-.gap-1 {
-  gap: $spacing-sm;
-}
-
-.gap-2 {
-  gap: $spacing-md;
-}
-
-.gap-3 {
-  gap: $spacing-lg;
-}
-
-// Scrollbar styles
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: $gray-100;
-}
-
-::-webkit-scrollbar-thumb {
-  background: $gray-300;
-  border-radius: 4px;
-
-  &:hover {
-    background: $gray-400;
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }

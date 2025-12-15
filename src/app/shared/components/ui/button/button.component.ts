@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -7,163 +7,58 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     <button
-      [class]="'btn btn-' + variant + ' btn-' + size"
+      [class]="buttonClasses()"
       [disabled]="disabled || loading"
       (click)="handleClick($event)"
+      [attr.aria-busy]="loading"
+      [attr.aria-disabled]="disabled"
     >
-      <span *ngIf="loading" class="spinner"></span>
+      <span *ngIf="loading" class="spinner-sm mr-2"></span>
       <ng-content></ng-content>
     </button>
   `,
-  styles: [
-    `
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        font-weight: 500;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-        font-family: inherit;
-        white-space: nowrap;
-        user-select: none;
-        outline: none;
-      }
-
-      .btn:focus-visible {
-        outline: 2px solid #3b82f6;
-        outline-offset: 2px;
-      }
-
-      .btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-
-      /* Sizes */
-      .btn-sm {
-        padding: 0.5rem 0.875rem;
-        font-size: 0.8125rem;
-        letter-spacing: 0.3px;
-      }
-
-      .btn-md {
-        padding: 0.625rem 1rem;
-        font-size: 0.875rem;
-        letter-spacing: 0.25px;
-      }
-
-      .btn-lg {
-        padding: 0.75rem 1.5rem;
-        font-size: 1rem;
-      }
-
-      /* Primary */
-      .btn-primary {
-        background: #3b82f6;
-        color: white;
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-      }
-
-      .btn-primary:hover:not(:disabled) {
-        background: #2563eb;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-      }
-
-      /* Secondary */
-      .btn-secondary {
-        background: #6b7280;
-        color: white;
-      }
-
-      .btn-secondary:hover:not(:disabled) {
-        background: #4b5563;
-      }
-
-      /* Outline */
-      .btn-outline {
-        background: transparent;
-        color: #3b82f6;
-        border: 1px solid #e5e7eb;
-      }
-
-      .btn-outline:hover:not(:disabled) {
-        background: #f3f4f6;
-        border-color: #d1d5db;
-      }
-
-      /* Success */
-      .btn-success {
-        background: #10b981;
-        color: white;
-      }
-
-      .btn-success:hover:not(:disabled) {
-        background: #059669;
-      }
-
-      /* Danger */
-      .btn-danger {
-        background: #ef4444;
-        color: white;
-      }
-
-      .btn-danger:hover:not(:disabled) {
-        background: #dc2626;
-      }
-
-      /* Warning */
-      .btn-warning {
-        background: #f59e0b;
-        color: white;
-      }
-
-      .btn-warning:hover:not(:disabled) {
-        background: #d97706;
-      }
-
-      /* Info */
-      .btn-info {
-        background: #3b82f6;
-        color: white;
-      }
-
-      .btn-info:hover:not(:disabled) {
-        background: #2563eb;
-      }
-
-      /* Light */
-      .btn-light {
-        background: #f3f4f6;
-        color: #374151;
-        border: 1px solid #e5e7eb;
-      }
-
-      .btn-light:hover:not(:disabled) {
-        background: #e5e7eb;
-        border-color: #d1d5db;
-      }
-    `,
-  ],
+  styles: [],
 })
 export class ButtonComponent {
   @Input() variant:
     | 'primary'
     | 'secondary'
     | 'outline'
+    | 'ghost'
     | 'success'
     | 'danger'
     | 'warning'
     | 'info'
-    | 'light'
-    | 'dark' = 'primary';
+    | 'light' = 'primary';
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
   @Input() disabled = false;
   @Input() loading = false;
   @Output() clicked = new EventEmitter<Event>();
+
+  // Computed class names using Tailwind utilities
+  protected buttonClasses = computed(() => {
+    const baseClasses = 'inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+
+    const sizeClasses = {
+      sm: 'px-3 py-2 text-sm',
+      md: 'px-4 py-2.5 text-base',
+      lg: 'px-6 py-3 text-lg',
+    };
+
+    const variantClasses = {
+      primary: 'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 shadow-sm hover:shadow-md active:scale-95',
+      secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500 shadow-sm hover:shadow-md active:scale-95',
+      outline: 'border-2 border-primary-600 text-primary-600 hover:bg-primary-50 focus:ring-primary-500 active:scale-95',
+      ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-gray-500 active:scale-95',
+      success: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 shadow-sm hover:shadow-md active:scale-95',
+      danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 shadow-sm hover:shadow-md active:scale-95',
+      warning: 'bg-yellow-500 text-white hover:bg-yellow-600 focus:ring-yellow-500 shadow-sm hover:shadow-md active:scale-95',
+      info: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-sm hover:shadow-md active:scale-95',
+      light: 'bg-gray-100 text-gray-800 hover:bg-gray-200 focus:ring-gray-500 border border-gray-300',
+    };
+
+    return `${baseClasses} ${sizeClasses[this.size]} ${variantClasses[this.variant]}`;
+  });
 
   handleClick(event: Event): void {
     if (!this.disabled && !this.loading) {

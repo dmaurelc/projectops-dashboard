@@ -21,17 +21,22 @@
     "@angular/platform-browser": "^20.0.0",
     "@angular/platform-browser-dynamic": "^20.0.0",
     "@angular/router": "^20.0.0",
+    "chart.js": "^4.4.0",
+    "ng2-charts": "^6.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.15.0",
-    "chart.js": "^4.4.0",
-    "ng2-charts": "^6.0.0"
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^20.0.0",
     "@angular/cli": "^20.0.0",
     "@angular/compiler-cli": "^20.0.0",
+    "@tailwindcss/forms": "0.4.0-alpha.2",
+    "@tailwindcss/typography": "0.5.0-alpha.3",
     "@types/node": "^20.11.0",
+    "autoprefixer": "^10.4.23",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.0.0",
     "typescript": "~5.8.0"
   }
 }
