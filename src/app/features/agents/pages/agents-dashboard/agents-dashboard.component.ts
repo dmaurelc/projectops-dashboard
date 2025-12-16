@@ -1,6 +1,5 @@
 import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AgentEngineService } from '@core/agents/services/agent-engine.service';
 import { AgentRegistryService } from '@core/agents/services/agent-registry.service';
 import { TaskQueueService } from '@core/agents/services/task-queue.service';
 import { MetaAgentService } from '@core/agents/services/meta-agent.service';
@@ -13,292 +12,125 @@ import { TaskPriority } from '@core/agents/models/agent-task.model';
   standalone: true,
   imports: [CommonModule, AgentCardComponent],
   template: `
-    <div class="agents-dashboard">
-      <header class="dashboard-header">
-        <h1>AI Agents Dashboard</h1>
-        <p class="subtitle">Sistema multi-agente con Project Manager</p>
-      </header>
+    <div class="p-8">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-semibold tracking-tight">AI Agents Dashboard</h1>
+        <p class="text-muted-foreground mt-2">Sistema multi-agente con Project Manager</p>
+      </div>
 
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-value">{{ totalAgents() }}</div>
-          <div class="stat-label">Total Agentes</div>
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="rounded-lg border bg-card p-6">
+          <div class="text-2xl font-semibold">{{ totalAgents() }}</div>
+          <div class="text-xs text-muted-foreground uppercase tracking-wider mt-1">Total Agentes</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-value">{{ activeAgents() }}</div>
-          <div class="stat-label">Activos</div>
+        <div class="rounded-lg border bg-card p-6">
+          <div class="text-2xl font-semibold">{{ activeAgents() }}</div>
+          <div class="text-xs text-muted-foreground uppercase tracking-wider mt-1">Activos</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-value">{{ queueStats().pending }}</div>
-          <div class="stat-label">Tareas Pendientes</div>
+        <div class="rounded-lg border bg-card p-6">
+          <div class="text-2xl font-semibold">{{ queueStats().pending }}</div>
+          <div class="text-xs text-muted-foreground uppercase tracking-wider mt-1">Tareas Pendientes</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-value">{{ queueStats().completed }}</div>
-          <div class="stat-label">Tareas Completadas</div>
+        <div class="rounded-lg border bg-card p-6">
+          <div class="text-2xl font-semibold">{{ queueStats().completed }}</div>
+          <div class="text-xs text-muted-foreground uppercase tracking-wider mt-1">Tareas Completadas</div>
         </div>
       </div>
 
-      <section class="test-section">
-        <h2>Probar Sistema de Agentes</h2>
-        <div class="test-controls">
-          <button class="btn btn-primary" (click)="testAgentSystem()">
+      <!-- Test Section -->
+      <div class="rounded-lg border bg-card p-6 mb-8">
+        <h2 class="text-lg font-semibold mb-4">Probar Sistema de Agentes</h2>
+        <div class="flex gap-3 mb-4">
+          <button
+            (click)="testAgentSystem()"
+            class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground h-10 px-4 py-2 text-sm font-medium hover:bg-primary/90 transition-colors"
+          >
             Ejecutar Tarea de Prueba
           </button>
-          <button class="btn btn-secondary" (click)="clearQueue()">
+          <button
+            (click)="clearQueue()"
+            class="inline-flex items-center justify-center rounded-md bg-secondary text-secondary-foreground h-10 px-4 py-2 text-sm font-medium hover:bg-secondary/80 transition-colors"
+          >
             Limpiar Cola
           </button>
         </div>
         @if (testResult()) {
-          <div class="test-result">
-            <h3>Resultado:</h3>
-            <pre>{{ testResult() }}</pre>
+          <div class="rounded-md bg-muted p-4">
+            <h3 class="text-sm font-medium mb-2">Resultado:</h3>
+            <pre class="text-xs overflow-auto">{{ testResult() }}</pre>
           </div>
         }
-      </section>
+      </div>
 
-      <section class="agents-section">
-        <h2>Agentes Disponibles</h2>
-        <div class="agents-grid">
+      <!-- Agents Section -->
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Agentes Disponibles</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           @for (agent of agents(); track agent.id) {
             <app-agent-card [agent]="agent" />
           }
         </div>
-      </section>
+      </div>
 
-      <section class="tasks-section">
-        <h2>Cola de Tareas</h2>
-        <div class="tasks-list">
+      <!-- Tasks Section -->
+      <div>
+        <h2 class="text-xl font-semibold mb-4">Cola de Tareas</h2>
+        <div class="space-y-3">
           @if (tasks().length === 0) {
-            <p class="empty-state">No hay tareas en cola</p>
+            <p class="text-center text-muted-foreground py-8">No hay tareas en cola</p>
           } @else {
             @for (task of tasks(); track task.id) {
-              <div class="task-item">
-                <div class="task-header">
-                  <h4>{{ task.title }}</h4>
-                  <span class="task-status" [class]="'status-' + task.status">
+              <div class="rounded-lg border bg-card p-4">
+                <div class="flex items-start justify-between mb-2">
+                  <h4 class="font-medium">{{ task.title }}</h4>
+                  <span
+                    class="inline-flex h-6 items-center gap-1.5 rounded-md border border-input bg-background px-2 text-xs font-medium"
+                    [class.text-amber-600]="task.status === 'pending'"
+                    [class.text-blue-600]="task.status === 'assigned' || task.status === 'in_progress'"
+                    [class.text-green-600]="task.status === 'completed'"
+                    [class.text-red-600]="task.status === 'failed'"
+                  >
+                    <span
+                      class="h-1.5 w-1.5 rounded-full"
+                      [class.bg-amber-600]="task.status === 'pending'"
+                      [class.bg-blue-600]="task.status === 'assigned' || task.status === 'in_progress'"
+                      [class.bg-green-600]="task.status === 'completed'"
+                      [class.bg-red-600]="task.status === 'failed'"
+                    ></span>
                     {{ task.status }}
                   </span>
                 </div>
-                <p class="task-description">{{ task.description }}</p>
-                <div class="task-meta">
-                  <span class="task-type">{{ task.type }}</span>
-                  <span class="task-priority" [class]="'priority-' + task.priority">
+                <p class="text-sm text-muted-foreground mb-3">{{ task.description }}</p>
+                <div class="flex items-center gap-3 text-xs">
+                  <span class="inline-flex items-center rounded-md bg-secondary px-2 py-1">{{ task.type }}</span>
+                  <span
+                    class="inline-flex items-center rounded-md px-2 py-1"
+                    [class.bg-muted]="task.priority === 'low'"
+                    [class.bg-amber-100]="task.priority === 'medium'"
+                    [class.bg-orange-100]="task.priority === 'high'"
+                    [class.bg-red-100]="task.priority === 'critical'"
+                    [class.text-amber-800]="task.priority === 'medium'"
+                    [class.text-orange-800]="task.priority === 'high'"
+                    [class.text-red-800]="task.priority === 'critical'"
+                  >
                     {{ task.priority }}
                   </span>
                   @if (task.assignedTo) {
-                    <span class="task-agent">Asignado a: {{ getAgentName(task.assignedTo) }}</span>
+                    <span class="text-muted-foreground">Asignado a: {{ getAgentName(task.assignedTo) }}</span>
                   }
                 </div>
               </div>
             }
           }
         </div>
-      </section>
+      </div>
     </div>
   `,
-  styles: [`
-    .agents-dashboard {
-      padding: 2rem;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    .dashboard-header {
-      margin-bottom: 2rem;
-    }
-
-    .dashboard-header h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #1a1a1a;
-      margin-bottom: 0.5rem;
-    }
-
-    .subtitle {
-      color: #666;
-      font-size: 1rem;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .stat-card {
-      background: white;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 1.5rem;
-      text-align: center;
-    }
-
-    .stat-value {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #2563eb;
-      margin-bottom: 0.5rem;
-    }
-
-    .stat-label {
-      color: #666;
-      font-size: 0.875rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .test-section {
-      background: white;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .test-section h2 {
-      font-size: 1.25rem;
-      margin-bottom: 1rem;
-    }
-
-    .test-controls {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .btn {
-      padding: 0.75rem 1.5rem;
-      border-radius: 6px;
-      border: none;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .btn-primary {
-      background: #2563eb;
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: #1d4ed8;
-    }
-
-    .btn-secondary {
-      background: #6b7280;
-      color: white;
-    }
-
-    .btn-secondary:hover {
-      background: #4b5563;
-    }
-
-    .test-result {
-      background: #f3f4f6;
-      border-radius: 4px;
-      padding: 1rem;
-    }
-
-    .test-result pre {
-      font-family: monospace;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-
-    .agents-section, .tasks-section {
-      margin-bottom: 2rem;
-    }
-
-    .agents-section h2, .tasks-section h2 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-    }
-
-    .agents-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .tasks-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .task-item {
-      background: white;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 1rem;
-    }
-
-    .task-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.5rem;
-    }
-
-    .task-header h4 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin: 0;
-    }
-
-    .task-status {
-      padding: 0.25rem 0.75rem;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 500;
-      text-transform: uppercase;
-    }
-
-    .status-pending { background: #fef3c7; color: #92400e; }
-    .status-assigned { background: #dbeafe; color: #1e40af; }
-    .status-in_progress { background: #bfdbfe; color: #1e3a8a; }
-    .status-completed { background: #d1fae5; color: #065f46; }
-    .status-failed { background: #fee2e2; color: #991b1b; }
-
-    .task-description {
-      color: #666;
-      font-size: 0.875rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .task-meta {
-      display: flex;
-      gap: 1rem;
-      font-size: 0.75rem;
-    }
-
-    .task-type {
-      padding: 0.25rem 0.5rem;
-      background: #f3f4f6;
-      border-radius: 4px;
-    }
-
-    .task-priority {
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-    }
-
-    .priority-low { background: #f3f4f6; color: #4b5563; }
-    .priority-medium { background: #fef3c7; color: #92400e; }
-    .priority-high { background: #fed7aa; color: #9a3412; }
-    .priority-critical { background: #fecaca; color: #991b1b; }
-
-    .empty-state {
-      text-align: center;
-      color: #9ca3af;
-      padding: 2rem;
-    }
-  `]
+  styles: []
 })
 export class AgentsDashboardComponent {
-  private agentEngine = inject(AgentEngineService);
   private registry = inject(AgentRegistryService);
   private taskQueue = inject(TaskQueueService);
   private metaAgent = inject(MetaAgentService);

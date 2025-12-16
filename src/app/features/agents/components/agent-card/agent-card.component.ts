@@ -7,213 +7,82 @@ import { Agent } from '@core/agents/models/agent.model';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="agent-card" [class]="'status-' + agent().status">
-      <div class="agent-header">
-        <div class="agent-icon">
-          {{ getAgentIcon() }}
+    <div class="rounded-lg border bg-card text-card-foreground transition-colors hover:bg-accent/50">
+      <!-- Header -->
+      <div class="flex flex-col space-y-1.5 p-6">
+        <div class="flex items-start gap-4">
+          <!-- Icon -->
+          <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-muted text-2xl flex-shrink-0">
+            {{ getAgentIcon() }}
+          </div>
+
+          <!-- Info -->
+          <div class="flex-1 min-w-0">
+            <h3 class="font-semibold leading-none tracking-tight">
+              {{ agent().name }}
+            </h3>
+            <p class="text-xs text-muted-foreground mt-1 uppercase tracking-wider">
+              {{ formatType() }}
+            </p>
+          </div>
+
+          <!-- Status -->
+          <span
+            class="inline-flex h-6 items-center gap-1.5 rounded-md border border-input bg-background px-2 text-xs font-medium"
+            [class.text-green-600]="agent().status === 'idle'"
+            [class.text-blue-600]="agent().status === 'working'"
+            [class.text-amber-600]="agent().status === 'waiting'"
+            [class.text-red-600]="agent().status === 'error'"
+          >
+            <span
+              class="h-1.5 w-1.5 rounded-full"
+              [class.bg-green-600]="agent().status === 'idle'"
+              [class.bg-blue-600]="agent().status === 'working'"
+              [class.bg-amber-600]="agent().status === 'waiting'"
+              [class.bg-red-600]="agent().status === 'error'"
+            ></span>
+            {{ agent().status }}
+          </span>
         </div>
-        <div class="agent-info">
-          <h3>{{ agent().name }}</h3>
-          <span class="agent-type">{{ formatType() }}</span>
-        </div>
-        <span class="status-indicator" [class]="'status-' + agent().status">
-          {{ agent().status }}
-        </span>
+
+        <!-- Description -->
+        <p class="text-sm text-muted-foreground pt-2">
+          {{ agent().description }}
+        </p>
       </div>
 
-      <p class="agent-description">{{ agent().description }}</p>
-
-      <div class="agent-stats">
-        <div class="stat">
-          <span class="stat-label">Skills</span>
-          <span class="stat-value">{{ agent().skills.length }}</span>
+      <!-- Stats -->
+      <div class="grid grid-cols-3 gap-4 px-6 pb-4 border-b">
+        <div class="text-center">
+          <div class="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Skills</div>
+          <div class="text-xl font-semibold">{{ agent().skills.length }}</div>
         </div>
-        <div class="stat">
-          <span class="stat-label">Success</span>
-          <span class="stat-value">{{ agent().successRate }}%</span>
+        <div class="text-center">
+          <div class="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Success</div>
+          <div class="text-xl font-semibold">{{ agent().successRate }}%</div>
         </div>
-        <div class="stat">
-          <span class="stat-label">Tasks</span>
-          <span class="stat-value">{{ agent().tasksCompleted }}</span>
+        <div class="text-center">
+          <div class="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Tasks</div>
+          <div class="text-xl font-semibold">{{ agent().tasksCompleted }}</div>
         </div>
       </div>
 
-      <div class="agent-skills">
+      <!-- Skills -->
+      <div class="flex flex-wrap gap-1.5 p-6">
         @for (skill of agent().skills.slice(0, 3); track skill.name) {
-          <span class="skill-badge" [class]="'level-' + skill.level">
+          <span class="inline-flex items-center rounded-md bg-secondary px-2 py-1 text-xs">
             {{ skill.name }}
           </span>
         }
         @if (agent().skills.length > 3) {
-          <span class="skill-badge more">+{{ agent().skills.length - 3 }}</span>
+          <span class="inline-flex items-center rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground">
+            +{{ agent().skills.length - 3 }}
+          </span>
         }
       </div>
     </div>
   `,
-  styles: [`
-    .agent-card {
-      background: white;
-      border: 1px solid #e0e0e0;
-      border-radius: 12px;
-      padding: 1.5rem;
-      transition: all 0.2s;
-    }
-
-    .agent-card:hover {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      transform: translateY(-2px);
-    }
-
-    .agent-card.status-working {
-      border-left: 4px solid #2563eb;
-    }
-
-    .agent-card.status-idle {
-      border-left: 4px solid #10b981;
-    }
-
-    .agent-card.status-error {
-      border-left: 4px solid #ef4444;
-    }
-
-    .agent-header {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .agent-icon {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      flex-shrink: 0;
-    }
-
-    .agent-info {
-      flex: 1;
-    }
-
-    .agent-info h3 {
-      font-size: 1.125rem;
-      font-weight: 600;
-      margin: 0 0 0.25rem 0;
-      color: #1a1a1a;
-    }
-
-    .agent-type {
-      font-size: 0.75rem;
-      color: #6b7280;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .status-indicator {
-      padding: 0.25rem 0.75rem;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 500;
-      text-transform: uppercase;
-    }
-
-    .status-indicator.status-idle {
-      background: #d1fae5;
-      color: #065f46;
-    }
-
-    .status-indicator.status-working {
-      background: #dbeafe;
-      color: #1e40af;
-    }
-
-    .status-indicator.status-waiting {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .status-indicator.status-error {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .status-indicator.status-paused {
-      background: #f3f4f6;
-      color: #4b5563;
-    }
-
-    .agent-description {
-      color: #6b7280;
-      font-size: 0.875rem;
-      line-height: 1.5;
-      margin-bottom: 1rem;
-    }
-
-    .agent-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      margin-bottom: 1rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    .stat {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-
-    .stat-label {
-      font-size: 0.75rem;
-      color: #9ca3af;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.25rem;
-    }
-
-    .stat-value {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #1f2937;
-    }
-
-    .agent-skills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .skill-badge {
-      padding: 0.25rem 0.75rem;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 500;
-      background: #f3f4f6;
-      color: #4b5563;
-    }
-
-    .skill-badge.level-expert,
-    .skill-badge.level-master {
-      background: #dbeafe;
-      color: #1e40af;
-    }
-
-    .skill-badge.level-advanced {
-      background: #e0e7ff;
-      color: #4338ca;
-    }
-
-    .skill-badge.more {
-      background: #e5e7eb;
-      color: #6b7280;
-    }
-  `]
+  styles: []
 })
 export class AgentCardComponent {
   agent = input.required<Agent>();
