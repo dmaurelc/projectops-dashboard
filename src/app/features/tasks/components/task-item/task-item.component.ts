@@ -1,4 +1,4 @@
-import { Component, Input, computed } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Task } from '@core/models/task.model';
@@ -14,54 +14,44 @@ import { DateFormatPipe } from '@shared/pipes/date-format.pipe';
   template: `
     <div
       [routerLink]="['/tasks', task.id]"
-      class="group relative bg-white rounded-xl border border-gray-200 p-5 cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-primary-300 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+      class="group rounded-lg border bg-card p-4 transition-colors hover:bg-accent/50 cursor-pointer"
     >
-      <!-- Priority Indicator Strip -->
-      <div [class]="priorityStripClasses()" class="absolute top-0 left-0 w-1 h-full rounded-l-xl transition-all duration-300"></div>
+      <div class="flex items-start justify-between gap-4">
+        <!-- Task Info -->
+        <div class="flex-1 space-y-1">
+          <!-- Title -->
+          <h4 class="text-sm font-medium leading-none">
+            {{ task.title }}
+          </h4>
 
-      <div class="flex flex-col gap-3 pl-3">
-        <!-- Title -->
-        <h4 class="text-base font-semibold text-gray-900 leading-snug group-hover:text-primary-600 transition-colors">
-          {{ task.title }}
-        </h4>
+          <!-- Description -->
+          <p class="text-sm text-muted-foreground line-clamp-2">
+            {{ task.description }}
+          </p>
 
-        <!-- Description -->
-        <p class="text-sm text-gray-600 leading-relaxed line-clamp-2">
-          {{ task.description }}
-        </p>
+          <!-- Meta Information -->
+          <div class="flex items-center gap-3 pt-2">
+            <!-- Status Badge -->
+            <app-status-badge
+              [label]="task.status | statusLabel"
+              [variant]="task.status | statusColor"
+              size="sm"
+            />
 
-        <!-- Meta Information -->
-        <div class="flex items-center gap-3 flex-wrap">
-          <!-- Status Badge -->
-          <app-status-badge
-            [label]="task.status | statusLabel"
-            [variant]="task.status | statusColor"
-            size="sm"
-          />
+            <!-- Priority -->
+            <span class="text-xs text-muted-foreground">
+              {{ getPriorityLabel(task.priority) }}
+            </span>
 
-          <!-- Priority Badge -->
-          <span [class]="priorityBadgeClasses()" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold uppercase tracking-wide">
-            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd" />
-            </svg>
-            {{ getPriorityLabel(task.priority) }}
-          </span>
-
-          <!-- Due Date -->
-          <span *ngIf="task.dueDate" class="ml-auto flex items-center gap-1.5 text-xs text-gray-500 font-medium">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            {{ task.dueDate | dateFormat:'short' }}
-          </span>
+            <!-- Due Date -->
+            <span *ngIf="task.dueDate" class="flex items-center gap-1 text-xs text-muted-foreground">
+              <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              {{ task.dueDate | dateFormat:'short' }}
+            </span>
+          </div>
         </div>
-      </div>
-
-      <!-- Hover Arrow -->
-      <div class="absolute top-1/2 right-4 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
       </div>
     </div>
   `,
@@ -76,26 +66,6 @@ import { DateFormatPipe } from '@shared/pipes/date-format.pipe';
 })
 export class TaskItemComponent {
   @Input({ required: true }) task!: Task;
-
-  protected priorityStripClasses = computed(() => {
-    const classes: Record<string, string> = {
-      'critical': 'bg-red-600 group-hover:w-2',
-      'high': 'bg-orange-500 group-hover:w-2',
-      'medium': 'bg-yellow-500 group-hover:w-2',
-      'low': 'bg-gray-400 group-hover:w-2'
-    };
-    return classes[this.task.priority] || 'bg-gray-400 group-hover:w-2';
-  });
-
-  protected priorityBadgeClasses = computed(() => {
-    const classes: Record<string, string> = {
-      'critical': 'bg-red-100 text-red-800 ring-1 ring-inset ring-red-600/20',
-      'high': 'bg-orange-100 text-orange-800 ring-1 ring-inset ring-orange-600/20',
-      'medium': 'bg-yellow-100 text-yellow-800 ring-1 ring-inset ring-yellow-600/20',
-      'low': 'bg-gray-100 text-gray-600 ring-1 ring-inset ring-gray-600/20'
-    };
-    return classes[this.task.priority] || 'bg-gray-100 text-gray-600';
-  });
 
   getPriorityLabel(priority: string): string {
     const map: Record<string, string> = {
