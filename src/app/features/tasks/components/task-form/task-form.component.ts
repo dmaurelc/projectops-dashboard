@@ -222,6 +222,7 @@ export class TaskFormComponent implements OnInit, OnChanges {
   private teamService = inject(TeamService);
 
   @Input() task?: Task;
+  @Input() projectId?: string;
   @Output() save = new EventEmitter<TaskCreateDto | Task>();
   @Output() cancel = new EventEmitter<void>();
 
@@ -237,7 +238,7 @@ export class TaskFormComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['task'] && this.form) {
+    if ((changes['task'] || changes['projectId']) && this.form) {
       this.initForm();
     }
   }
@@ -246,7 +247,7 @@ export class TaskFormComponent implements OnInit, OnChanges {
     this.form = this.fb.group({
       title: [this.task?.title || '', Validators.required],
       description: [this.task?.description || '', Validators.required],
-      projectId: [this.task?.projectId || '', Validators.required],
+      projectId: [this.task?.projectId || this.projectId || '', Validators.required],
       status: [this.task?.status || TaskStatus.TODO, Validators.required],
       priority: [this.task?.priority || TaskPriority.MEDIUM, Validators.required],
       assignedToId: [this.task?.assignedToId || ''],

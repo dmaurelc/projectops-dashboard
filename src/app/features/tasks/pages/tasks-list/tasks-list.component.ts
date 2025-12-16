@@ -240,6 +240,7 @@ import { TaskFormComponent } from '../../components/task-form/task-form.componen
               <app-task-item
                 *ngFor="let task of taskService.tasks(); trackBy: trackByTaskId"
                 [task]="task"
+                (taskClick)="openTaskDetail($event)"
               />
 
               <!-- Empty State -->
@@ -338,6 +339,11 @@ export class TasksListComponent implements OnInit {
 
   openCreateOffcanvas(): void {
     this.editingTask.set(undefined);
+    this.showOffcanvas.set(true);
+  }
+
+  openTaskDetail(task: Task): void {
+    this.editingTask.set(task);
     this.showOffcanvas.set(true);
   }
 

@@ -1,6 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { Task } from '@core/models/task.model';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { StatusColorPipe } from '@shared/pipes/status-color.pipe';
@@ -10,10 +9,10 @@ import { DateFormatPipe } from '@shared/pipes/date-format.pipe';
 @Component({
   selector: 'app-task-item',
   standalone: true,
-  imports: [CommonModule, RouterLink, StatusBadgeComponent, StatusColorPipe, StatusLabelPipe, DateFormatPipe],
+  imports: [CommonModule, StatusBadgeComponent, StatusColorPipe, StatusLabelPipe, DateFormatPipe],
   template: `
     <div
-      [routerLink]="['/tasks', task.id]"
+      (click)="taskClick.emit(task)"
       class="group rounded-lg border bg-card p-4 transition-colors hover:bg-accent/50 cursor-pointer"
     >
       <div class="flex items-start justify-between gap-4">
@@ -66,6 +65,7 @@ import { DateFormatPipe } from '@shared/pipes/date-format.pipe';
 })
 export class TaskItemComponent {
   @Input({ required: true }) task!: Task;
+  @Output() taskClick = new EventEmitter<Task>();
 
   getPriorityLabel(priority: string): string {
     const map: Record<string, string> = {

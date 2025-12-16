@@ -1,6 +1,7 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Project, ProjectCreateDto } from '@core/models/project.model';
+import { Task, TaskCreateDto } from '@core/models/task.model';
 import { ProjectStatus } from '@core/models/status.model';
 import { ProjectService } from '@core/services/project.service';
 import { TaskService } from '@core/services/task.service';
@@ -10,6 +11,7 @@ import { ProjectCardComponent } from '../../components/project-card/project-card
 import { ProjectFiltersComponent } from '../../components/project-filters/project-filters.component';
 import { OffcanvasComponent } from '@shared/components/ui/offcanvas/offcanvas.component';
 import { ProjectFormComponent } from '../../components/project-form/project-form.component';
+import { TaskFormComponent } from '../../../tasks/components/task-form/task-form.component';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { StatusColorPipe } from '@shared/pipes/status-color.pipe';
 import { StatusLabelPipe } from '@shared/pipes/status-label.pipe';
@@ -24,6 +26,7 @@ import { StatusLabelPipe } from '@shared/pipes/status-label.pipe';
     ProjectFiltersComponent,
     OffcanvasComponent,
     ProjectFormComponent,
+    TaskFormComponent,
     StatusBadgeComponent,
     StatusColorPipe,
     StatusLabelPipe,
@@ -180,6 +183,21 @@ import { StatusLabelPipe } from '@shared/pipes/status-label.pipe';
             </div>
           </div>
         </app-offcanvas>
+
+        <!-- Task Create/Edit Offcanvas -->
+        <app-offcanvas
+          *ngIf="showTaskOffcanvas()"
+          [title]="editingTask() ? 'Edit Task' : 'Create New Task'"
+          position="right"
+          (close)="closeTaskOffcanvas()"
+        >
+          <app-task-form
+            [task]="editingTask()"
+            [projectId]="selectedProject()?.id"
+            (save)="onSaveTask($event)"
+            (cancel)="closeTaskOffcanvas()"
+          />
+        </app-offcanvas>
       </div>
     </div>
   `,
@@ -191,8 +209,10 @@ export class ProjectsBoardComponent implements OnInit {
   private teamService = inject(TeamService);
   showCreateOffcanvas = signal(false);
   showDetailOffcanvas = signal(false);
+  showTaskOffcanvas = signal(false);
   editingProject = signal<Project | undefined>(undefined);
   selectedProject = signal<Project | undefined>(undefined);
+  editingTask = signal<Task | undefined>(undefined);
 
   projectTasks = computed(() => {
     const project = this.selectedProject();
@@ -257,13 +277,21 @@ export class ProjectsBoardComponent implements OnInit {
   }
 
   createTask(): void {
-    console.log('Create task for project:', this.selectedProject());
-    // TODO: Implement task creation
+    this.editingTask.set(undefined);
+    this.showTaskOffcanvas.set(true);
   }
 
   viewTask(taskId: string): void {
-    console.log('View task:', taskId);
-    // TODO: Implement task detail view
+    const task = this.taskService.tasks().find(t => t.id === taskId);
+    if (task) {
+      this.editingTask.set(task);
+      this.showTaskOffcanvas.set(true);
+    }
+  }
+
+  closeTaskOffcanvas(): void {
+    this.showTaskOffcanvas.set(false);
+    this.editingTask.set(undefined);
   }
 
   getTeamMemberName(memberId: string): string {
@@ -284,5 +312,16 @@ export class ProjectsBoardComponent implements OnInit {
 
   onFilterChange(event: any): void {
     console.log('Filter changed:', event);
+  }
+
+  async onSaveTask(taskData: TaskCreateDto | Task): Promise<void> {
+    if (this.editingTask()) {
+      // Update existing task
+      await this.taskService.updateTask(taskData as Task);
+    } else {
+      // Create new task
+      await this.taskService.createTask(taskData as TaskCreateDto);
+    }
+    this.closeTaskOffcanvas();
   }
 }
