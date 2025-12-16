@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Project } from '@core/models/project.model';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
@@ -17,7 +17,7 @@ import { DateFormatPipe } from '@shared/pipes/date-format.pipe';
     DateFormatPipe,
   ],
   template: `
-    <div class="group rounded-lg border bg-card text-card-foreground transition-colors hover:bg-accent/50 cursor-pointer">
+    <div (click)="projectClick.emit(project)" class="group rounded-lg border bg-card text-card-foreground transition-colors hover:bg-accent/50 cursor-pointer">
       <!-- Content -->
       <div class="flex flex-col space-y-1.5 p-6">
         <!-- Title & Badge -->
@@ -74,4 +74,5 @@ import { DateFormatPipe } from '@shared/pipes/date-format.pipe';
 })
 export class ProjectCardComponent {
   @Input() project!: Project;
+  @Output() projectClick = new EventEmitter<Project>();
 }
