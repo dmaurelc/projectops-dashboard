@@ -126,7 +126,7 @@ import { StatusLabelPipe } from '@shared/pipes/status-label.pipe';
         <app-button type="button" variant="outline" (clicked)="cancel.emit()">
           Cancel
         </app-button>
-        <app-button type="submit" variant="primary" [disabled]="form.invalid || submitting()">
+        <app-button type="submit" variant="default" [disabled]="form.invalid || submitting()">
           {{ project ? 'Update' : 'Create' }} Project
         </app-button>
       </div>

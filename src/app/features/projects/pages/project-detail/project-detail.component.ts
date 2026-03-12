@@ -62,7 +62,7 @@ import { ProjectFormComponent } from '../../components/project-form/project-form
             <app-button variant="outline" (clicked)="editProject()"
               >Edit</app-button
             >
-            <app-button variant="danger" (clicked)="deleteProject()"
+            <app-button variant="destructive" (clicked)="deleteProject()"
               >Delete</app-button
             >
           </div>

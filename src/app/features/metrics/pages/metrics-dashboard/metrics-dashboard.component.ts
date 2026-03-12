@@ -1,7 +1,6 @@
 import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MetricsData, KPI } from '@core/models/metrics.model';
-import { CardComponent } from '@shared/components/ui/card/card.component';
 import { ButtonComponent } from '@shared/components/ui/button/button.component';
 import { KpiCardComponent } from '../../components/kpi-card/kpi-card.component';
 import { ChartCardComponent } from '../../components/chart-card/chart-card.component';
@@ -12,88 +11,93 @@ import { MetricsSummaryComponent } from '../../components/metrics-summary/metric
   standalone: true,
   imports: [
     CommonModule,
-    CardComponent,
     ButtonComponent,
     KpiCardComponent,
     ChartCardComponent,
     MetricsSummaryComponent
   ],
   template: `
-    <div class="metrics-dashboard">
-      <div class="dashboard-header">
-        <h1>Metrics Dashboard</h1>
-        <app-button variant="outline" (clicked)="refreshMetrics()">
-          Refresh
-        </app-button>
-      </div>
+    <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 lg:p-8">
+      <div class="container-custom max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+          <div class="flex-1">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight mb-2">
+              Metrics Dashboard
+            </h1>
+            <p class="text-gray-600 text-sm sm:text-base flex items-center gap-2">
+              <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              Track performance and key metrics in real-time
+            </p>
+          </div>
+          <div class="flex items-center gap-3 self-start sm:self-auto">
+            <app-button variant="outline" size="default" (clicked)="refreshMetrics()">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Refresh
+            </app-button>
+            <app-button variant="default" size="default">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Export
+            </app-button>
+          </div>
+        </div>
 
-      <div class="dashboard-content">
-        <!-- KPI Cards -->
-        <div class="kpi-grid">
-          <app-kpi-card *ngFor="let kpi of kpis()" [kpi]="kpi" />
+        <!-- KPI Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 lg:gap-6 mb-8">
+          <app-kpi-card *ngFor="let kpi of kpis(); trackBy: trackByKpiId" [kpi]="kpi" />
         </div>
 
         <!-- Metrics Summary -->
-        <app-metrics-summary [metrics]="metrics()" />
+        <div class="mb-8">
+          <app-metrics-summary [metrics]="metrics()" />
+        </div>
 
         <!-- Charts Section -->
-        <div class="charts-grid">
-          <app-chart-card
-            title="Projects by Status"
-            [data]="metrics().projectsByStatus"
-          />
-          <app-chart-card
-            title="Tasks by Priority"
-            [data]="metrics().tasksByPriority"
-          />
-          <app-chart-card
-            title="Team Workload"
-            [data]="metrics().teamWorkload"
-          />
-          <app-chart-card
-            title="Progress Over Time"
-            [data]="metrics().progressOverTime"
-          />
+        <div class="space-y-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold text-gray-900">Analytics</h2>
+            <div class="flex items-center gap-2">
+              <button class="px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
+                Last 7 days
+              </button>
+              <button class="px-3 py-1.5 text-sm font-medium text-white bg-primary-600 rounded-lg">
+                Last 30 days
+              </button>
+              <button class="px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
+                Last 90 days
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <app-chart-card
+              title="Projects by Status"
+              [data]="metrics().projectsByStatus"
+            />
+            <app-chart-card
+              title="Tasks by Priority"
+              [data]="metrics().tasksByPriority"
+            />
+            <app-chart-card
+              title="Team Workload"
+              [data]="metrics().teamWorkload"
+            />
+            <app-chart-card
+              title="Progress Over Time"
+              [data]="metrics().progressOverTime"
+            />
+          </div>
         </div>
       </div>
     </div>
   `,
-  styles: [`
-    .metrics-dashboard {
-      padding: 2rem;
-    }
-
-    .dashboard-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-
-    .dashboard-header h1 {
-      margin: 0;
-      font-size: 2rem;
-      color: #333;
-    }
-
-    .dashboard-content {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .charts-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-      gap: 1.5rem;
-    }
-  `]
+  styles: [],
 })
 export class MetricsDashboardComponent {
   metrics = signal<MetricsData>({
@@ -186,5 +190,9 @@ export class MetricsDashboardComponent {
 
   refreshMetrics(): void {
     console.log('Refreshing metrics...');
+  }
+
+  trackByKpiId(_index: number, kpi: KPI): string {
+    return kpi.id;
   }
 }

@@ -17,8 +17,20 @@ export interface DatabaseSchema {
   agentLogs?: AgentCommunicationLog[];
 }
 
+/**
+ * Servicio de base de datos JSON
+ *
+ * IMPORTANTE: Debido a restricciones de seguridad del navegador, no es posible
+ * escribir directamente en archivos del sistema desde JavaScript.
+ *
+ * Estrategia de persistencia:
+ * - Los datos se cargan desde assets/database.json al inicializar
+ * - Los cambios se guardan en localStorage para persistencia entre sesiones
+ * - Use el método exportDatabase() para descargar el estado actual como JSON
+ * - Para backend real, necesitarías implementar un servidor Node.js/Express
+ */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class JsonDatabaseService {
   private http = inject(HttpClient);
@@ -28,7 +40,8 @@ export class JsonDatabaseService {
   private initialized = false;
 
   /**
-   * Inicializa la base de datos cargando datos desde localStorage o el archivo JSON
+   * Inicializa la base de datos cargando datos desde el archivo JSON
+   * Los cambios se mantienen solo en memoria durante la sesión
    */
   async initialize(): Promise<void> {
     if (this.initialized) {
@@ -36,22 +49,13 @@ export class JsonDatabaseService {
     }
 
     try {
-      // Intentar cargar desde localStorage primero
-      const storedData = localStorage.getItem(this.STORAGE_KEY);
-
-      if (storedData) {
-        this.database = JSON.parse(storedData);
-        // Convertir strings de fecha a objetos Date
-        this.parseDates(this.database!);
-      } else {
-        // Si no hay datos en localStorage, cargar desde el archivo JSON
-        const data = await firstValueFrom(this.http.get<DatabaseSchema>(this.DATABASE_FILE));
-        if (data) {
-          this.database = data;
-          this.parseDates(this.database);
-          // Guardar en localStorage para futuras operaciones
-          this.save();
-        }
+      // Cargar siempre desde el archivo JSON
+      const data = await firstValueFrom(
+        this.http.get<DatabaseSchema>(this.DATABASE_FILE)
+      );
+      if (data) {
+        this.database = data;
+        this.parseDates(this.database);
       }
 
       this.initialized = true;
@@ -66,7 +70,7 @@ export class JsonDatabaseService {
    */
   private parseDates(db: DatabaseSchema): void {
     // Convertir fechas de proyectos
-    db.projects.forEach(project => {
+    db.projects.forEach((project) => {
       project.startDate = new Date(project.startDate);
       if (project.endDate) {
         project.endDate = new Date(project.endDate);
@@ -76,7 +80,7 @@ export class JsonDatabaseService {
     });
 
     // Convertir fechas de tareas
-    db.tasks.forEach(task => {
+    db.tasks.forEach((task) => {
       if (task.dueDate) {
         task.dueDate = new Date(task.dueDate);
       }
@@ -85,7 +89,7 @@ export class JsonDatabaseService {
     });
 
     // Convertir fechas de miembros del equipo
-    db.teamMembers.forEach(member => {
+    db.teamMembers.forEach((member) => {
       member.joinedDate = new Date(member.joinedDate);
     });
   }
@@ -96,6 +100,7 @@ export class JsonDatabaseService {
   private save(): void {
     if (this.database) {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.database));
+      console.log('💾 Database saved to localStorage');
     }
   }
 
@@ -112,7 +117,7 @@ export class JsonDatabaseService {
    */
   async getProjectById(id: string): Promise<Project | null> {
     await this.initialize();
-    return this.database?.projects.find(p => p.id === id) || null;
+    return this.database?.projects.find((p) => p.id === id) || null;
   }
 
   /**
@@ -128,9 +133,12 @@ export class JsonDatabaseService {
   /**
    * Actualiza un proyecto existente
    */
-  async updateProject(id: string, updates: Partial<Project>): Promise<Project | null> {
+  async updateProject(
+    id: string,
+    updates: Partial<Project>
+  ): Promise<Project | null> {
     await this.initialize();
-    const index = this.database!.projects.findIndex(p => p.id === id);
+    const index = this.database!.projects.findIndex((p) => p.id === id);
 
     if (index === -1) {
       return null;
@@ -140,7 +148,7 @@ export class JsonDatabaseService {
       ...this.database!.projects[index],
       ...updates,
       id, // Asegurar que el ID no cambie
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     this.save();
@@ -153,7 +161,9 @@ export class JsonDatabaseService {
   async deleteProject(id: string): Promise<boolean> {
     await this.initialize();
     const initialLength = this.database!.projects.length;
-    this.database!.projects = this.database!.projects.filter(p => p.id !== id);
+    this.database!.projects = this.database!.projects.filter(
+      (p) => p.id !== id
+    );
 
     if (this.database!.projects.length < initialLength) {
       this.save();
@@ -176,7 +186,7 @@ export class JsonDatabaseService {
    */
   async getTaskById(id: string): Promise<Task | null> {
     await this.initialize();
-    return this.database?.tasks.find(t => t.id === id) || null;
+    return this.database?.tasks.find((t) => t.id === id) || null;
   }
 
   /**
@@ -184,7 +194,7 @@ export class JsonDatabaseService {
    */
   async getTasksByProject(projectId: string): Promise<Task[]> {
     await this.initialize();
-    return this.database?.tasks.filter(t => t.projectId === projectId) || [];
+    return this.database?.tasks.filter((t) => t.projectId === projectId) || [];
   }
 
   /**
@@ -202,7 +212,7 @@ export class JsonDatabaseService {
    */
   async updateTask(id: string, updates: Partial<Task>): Promise<Task | null> {
     await this.initialize();
-    const index = this.database!.tasks.findIndex(t => t.id === id);
+    const index = this.database!.tasks.findIndex((t) => t.id === id);
 
     if (index === -1) {
       return null;
@@ -212,7 +222,7 @@ export class JsonDatabaseService {
       ...this.database!.tasks[index],
       ...updates,
       id, // Asegurar que el ID no cambie
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     this.save();
@@ -225,7 +235,7 @@ export class JsonDatabaseService {
   async deleteTask(id: string): Promise<boolean> {
     await this.initialize();
     const initialLength = this.database!.tasks.length;
-    this.database!.tasks = this.database!.tasks.filter(t => t.id !== id);
+    this.database!.tasks = this.database!.tasks.filter((t) => t.id !== id);
 
     if (this.database!.tasks.length < initialLength) {
       this.save();
@@ -248,7 +258,7 @@ export class JsonDatabaseService {
    */
   async getTeamMemberById(id: string): Promise<TeamMember | null> {
     await this.initialize();
-    return this.database?.teamMembers.find(m => m.id === id) || null;
+    return this.database?.teamMembers.find((m) => m.id === id) || null;
   }
 
   /**
@@ -264,9 +274,12 @@ export class JsonDatabaseService {
   /**
    * Actualiza un miembro del equipo existente
    */
-  async updateTeamMember(id: string, updates: Partial<TeamMember>): Promise<TeamMember | null> {
+  async updateTeamMember(
+    id: string,
+    updates: Partial<TeamMember>
+  ): Promise<TeamMember | null> {
     await this.initialize();
-    const index = this.database!.teamMembers.findIndex(m => m.id === id);
+    const index = this.database!.teamMembers.findIndex((m) => m.id === id);
 
     if (index === -1) {
       return null;
@@ -275,7 +288,7 @@ export class JsonDatabaseService {
     this.database!.teamMembers[index] = {
       ...this.database!.teamMembers[index],
       ...updates,
-      id // Asegurar que el ID no cambie
+      id, // Asegurar que el ID no cambie
     };
 
     this.save();
@@ -288,7 +301,9 @@ export class JsonDatabaseService {
   async deleteTeamMember(id: string): Promise<boolean> {
     await this.initialize();
     const initialLength = this.database!.teamMembers.length;
-    this.database!.teamMembers = this.database!.teamMembers.filter(m => m.id !== id);
+    this.database!.teamMembers = this.database!.teamMembers.filter(
+      (m) => m.id !== id
+    );
 
     if (this.database!.teamMembers.length < initialLength) {
       this.save();
@@ -319,17 +334,46 @@ export class JsonDatabaseService {
   /**
    * Limpia la base de datos (resetea a los datos originales del archivo)
    */
-  async reset(): Promise<void> {
+  async clearDatabase(): Promise<void> {
     localStorage.removeItem(this.STORAGE_KEY);
     this.database = null;
     this.initialized = false;
     await this.initialize();
+    console.log('🔄 Database reset to original file');
+  }
+
+  /**
+   * Exporta la base de datos actual como archivo JSON descargable
+   */
+  downloadDatabase(): void {
+    if (!this.database) {
+      console.error('No database to export');
+      return;
+    }
+
+    const dataStr = JSON.stringify(this.database, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `database-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    console.log('📥 Database exported');
   }
 
   /**
    * Genera un nuevo ID único
    */
-  generateId(type: 'projects' | 'tasks' | 'teamMembers' | 'agents' | 'agentTasks' | 'agentLogs'): string {
+  generateId(
+    type:
+      | 'projects'
+      | 'tasks'
+      | 'teamMembers'
+      | 'agents'
+      | 'agentTasks'
+      | 'agentLogs'
+  ): string {
     if (!this.database) {
       return '1';
     }
@@ -360,7 +404,7 @@ export class JsonDatabaseService {
    */
   async getAgentById(id: string): Promise<Agent | null> {
     await this.initialize();
-    return this.database?.agents?.find(a => a.id === id) || null;
+    return this.database?.agents?.find((a) => a.id === id) || null;
   }
 
   /**
@@ -379,13 +423,16 @@ export class JsonDatabaseService {
   /**
    * Actualiza un agente existente
    */
-  async updateAgent(id: string, updates: Partial<Agent>): Promise<Agent | null> {
+  async updateAgent(
+    id: string,
+    updates: Partial<Agent>
+  ): Promise<Agent | null> {
     await this.initialize();
     if (!this.database!.agents) {
       return null;
     }
 
-    const index = this.database!.agents.findIndex(a => a.id === id);
+    const index = this.database!.agents.findIndex((a) => a.id === id);
     if (index === -1) {
       return null;
     }
@@ -393,7 +440,7 @@ export class JsonDatabaseService {
     this.database!.agents[index] = {
       ...this.database!.agents[index],
       ...updates,
-      id
+      id,
     };
 
     this.save();
@@ -410,7 +457,7 @@ export class JsonDatabaseService {
     }
 
     const initialLength = this.database!.agents.length;
-    this.database!.agents = this.database!.agents.filter(a => a.id !== id);
+    this.database!.agents = this.database!.agents.filter((a) => a.id !== id);
 
     if (this.database!.agents.length < initialLength) {
       this.save();
@@ -433,7 +480,7 @@ export class JsonDatabaseService {
    */
   async getAgentTaskById(id: string): Promise<AgentTask | null> {
     await this.initialize();
-    return this.database?.agentTasks?.find(t => t.id === id) || null;
+    return this.database?.agentTasks?.find((t) => t.id === id) || null;
   }
 
   /**
@@ -452,13 +499,16 @@ export class JsonDatabaseService {
   /**
    * Actualiza una tarea de agente existente
    */
-  async updateAgentTask(id: string, updates: Partial<AgentTask>): Promise<AgentTask | null> {
+  async updateAgentTask(
+    id: string,
+    updates: Partial<AgentTask>
+  ): Promise<AgentTask | null> {
     await this.initialize();
     if (!this.database!.agentTasks) {
       return null;
     }
 
-    const index = this.database!.agentTasks.findIndex(t => t.id === id);
+    const index = this.database!.agentTasks.findIndex((t) => t.id === id);
     if (index === -1) {
       return null;
     }
@@ -467,7 +517,7 @@ export class JsonDatabaseService {
       ...this.database!.agentTasks[index],
       ...updates,
       id,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     this.save();
@@ -484,7 +534,9 @@ export class JsonDatabaseService {
     }
 
     const initialLength = this.database!.agentTasks.length;
-    this.database!.agentTasks = this.database!.agentTasks.filter(t => t.id !== id);
+    this.database!.agentTasks = this.database!.agentTasks.filter(
+      (t) => t.id !== id
+    );
 
     if (this.database!.agentTasks.length < initialLength) {
       this.save();

@@ -56,7 +56,7 @@ import { TaskFormComponent } from '../../components/task-form/task-form.componen
           </div>
           <div class="header-actions">
             <app-button variant="outline" (clicked)="editTask()">Edit</app-button>
-            <app-button variant="danger" (clicked)="deleteTask()">Delete</app-button>
+            <app-button variant="destructive" (clicked)="deleteTask()">Delete</app-button>
           </div>
         </div>
 
