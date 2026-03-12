@@ -19,10 +19,10 @@ export interface DatabaseSchema {
 
 /**
  * Servicio de base de datos JSON
- * 
+ *
  * IMPORTANTE: Debido a restricciones de seguridad del navegador, no es posible
  * escribir directamente en archivos del sistema desde JavaScript.
- * 
+ *
  * Estrategia de persistencia:
  * - Los datos se cargan desde assets/database.json al inicializar
  * - Los cambios se guardan en localStorage para persistencia entre sesiones
@@ -35,6 +35,7 @@ export interface DatabaseSchema {
 export class JsonDatabaseService {
   private http = inject(HttpClient);
   private readonly STORAGE_KEY = 'projectops_database';
+  private readonly DATABASE_FILE = 'assets/database.json';
   private database: DatabaseSchema | null = null;
   private initialized = false;
 
@@ -333,7 +334,8 @@ export class JsonDatabaseService {
   /**
    * Limpia la base de datos (resetea a los datos originales del archivo)
    */
-  aslocalStorage.removeItem(this.STORAGE_KEY);
+  async clearDatabase(): Promise<void> {
+    localStorage.removeItem(this.STORAGE_KEY);
     this.database = null;
     this.initialized = false;
     await this.initialize();
@@ -343,7 +345,7 @@ export class JsonDatabaseService {
   /**
    * Exporta la base de datos actual como archivo JSON descargable
    */
-  exportDatabase(): void {
+  downloadDatabase(): void {
     if (!this.database) {
       console.error('No database to export');
       return;
@@ -357,8 +359,7 @@ export class JsonDatabaseService {
     link.download = `database-${new Date().toISOString().split('T')[0]}.json`;
     link.click();
     URL.revokeObjectURL(url);
-    console.log('📥 Database exported'se;
-    await this.initialize();
+    console.log('📥 Database exported');
   }
 
   /**

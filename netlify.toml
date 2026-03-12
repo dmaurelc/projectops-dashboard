@@ -1,0 +1,6 @@
+[build]
+  command = "pnpm run build"
+  publish = "dist/projectops-dashboard/browser"
+
+[[plugins]]
+  package = "@netlify/angular-runtime"
